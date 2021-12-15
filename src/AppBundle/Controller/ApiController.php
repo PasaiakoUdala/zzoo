@@ -55,10 +55,13 @@ class ApiController extends FOSRestController
     $query = $em->createQuery(
     /** @lang text */
       '
-            SELECT o
+            SELECT o,u,a,z
             FROM AppBundle:Ordenantza o
                INNER JOIN o.udala u
+               LEFT JOIN o.atalak a
+               LEFT JOIN a.azpiatalak z
             WHERE u.kodea = :udalkodea and o.deletedAt is NULL
+                and z.kodea_prod is NOT NULL
             ORDER BY o.kodea
             '
     );
@@ -187,7 +190,7 @@ class ApiController extends FOSRestController
     $query = $em->createQuery(
     /** @lang text */
       '
-            SELECT a 
+            SELECT a
             FROM AppBundle:Atala a
                INNER JOIN a.ordenantza o
             WHERE o.id = :ordenantzaid AND ((a.ezabatu IS NULL) or (a.ezabatu <> 1))
@@ -250,8 +253,8 @@ class ApiController extends FOSRestController
     /** @var  $query QueryBuilder */
     $query = $em->createQuery(
     /** @lang text */
-      'SELECT p.id, p.kodea_prod, p.izenburuaeu_prod, p.izenburuaes_prod 
-                FROM AppBundle:Azpiatala p 
+      'SELECT p.id, p.kodea_prod, p.izenburuaeu_prod, p.izenburuaes_prod
+                FROM AppBundle:Azpiatala p
                 WHERE p.udala=:udalaid AND ((p.ezabatu IS NULL) or (p.ezabatu <> 1))
                 '
     );
@@ -292,8 +295,8 @@ class ApiController extends FOSRestController
     $query = $em->createQuery(
     /** @lang text */
       '
-                SELECT p.id, p.kodea_prod, p.izenburuaeu_prod,p.izenburuaes_prod  
-                    FROM AppBundle:Azpiatala p 
+                SELECT p.id, p.kodea_prod, p.izenburuaeu_prod,p.izenburuaes_prod
+                    FROM AppBundle:Azpiatala p
                 WHERE p.atala=:atalaid AND ((p.ezabatu IS NULL) or (p.ezabatu <> 1))
           '
     );
