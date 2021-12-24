@@ -55,13 +55,10 @@ class ApiController extends FOSRestController
     $query = $em->createQuery(
     /** @lang text */
       '
-            SELECT o,u,a,z
+            SELECT o
             FROM AppBundle:Ordenantza o
                INNER JOIN o.udala u
-               LEFT JOIN o.atalak a
-               LEFT JOIN a.azpiatalak z
             WHERE u.kodea = :udalkodea and o.deletedAt is NULL
-                and z.kodea_prod is NOT NULL
             ORDER BY o.kodea
             '
     );
