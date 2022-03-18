@@ -445,4 +445,35 @@ class ApiController extends FOSRestController
 
         return $view;
     }
+
+    /**
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Historikoa eskuratu",
+     *   statusCodes = {
+     *     200 = "Zuzena denean"
+     *   }
+     * )
+     * @param $udalaid
+     *
+     * @return View
+     * @Get("/historikoa/{udalaid}")
+     */
+    public function getHistorikoaAction($udalaid)
+    {
+        /** @var EntityManager $em */
+        $em     = $this->getDoctrine()->getManager();
+        $kostua = $em->getRepository('AppBundle:Historikoa')->findBy(
+            array(
+                'udala'     => $udalaid
+            )
+        );
+        $view   = View::create();
+        $view->setFormat('json');
+        $view->setData($kostua);
+        header('content-type: application/json; charset=utf-8');
+
+        return $view;
+    }
 }
