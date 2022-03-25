@@ -11,6 +11,7 @@ class HistorikoaRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('h.udala', 'u')
             ->andWhere('h.deletedAt is not null')
             ->andWhere('u.id = :udalaid')->setParameter('udalaid',$udalaid)
+            ->orderBy('h.bogargitaratzedata', 'DESC')
         ;
 
         return $qm->getQuery()->getResult();
