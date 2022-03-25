@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Historikoa
  *
  * @ORM\Table(name="historikoa")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\HistorikoaRepository")
  * @UdalaEgiaztatu(userFieldName="udala_id")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */

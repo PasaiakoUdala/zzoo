@@ -464,11 +464,7 @@ class ApiController extends FOSRestController
     {
         /** @var EntityManager $em */
         $em     = $this->getDoctrine()->getManager();
-        $kostua = $em->getRepository('AppBundle:Historikoa')->findBy(
-            array(
-                'udala'     => $udalaid
-            )
-        );
+        $kostua = $em->getRepository('AppBundle:Historikoa')->getHistorikoa($udalaid);
         $view   = View::create();
         $view->setFormat('json');
         $view->setData($kostua);
