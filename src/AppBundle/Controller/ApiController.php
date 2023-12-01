@@ -119,7 +119,9 @@ class ApiController extends FOSRestController
 
         /** @var Azpiatala $azpiatala */
         foreach ($atala->getAzpiatalak() as $keyAzpiAtala => $azpiatala) {
-            if (($azpiatala->getKodeaProd()!==null) && ($azpiatala->getIzenburuaeuProd()!==null) && ($azpiatala->getIzenburuaesProd()!==null) ){
+
+            //if (($azpiatala->getKodeaProd()!==null) && ($azpiatala->getIzenburuaeuProd()!==null) && ($azpiatala->getIzenburuaesProd()!==null) ){
+            if (($azpiatala->getIzenburuaeuProd()!==null) && ($azpiatala->getIzenburuaesProd()!==null) ){
                 $azpi = [];
                 $azpi['id'] = $azpiatala->getId();
                 $azpi['izenburuaeu_prod'] = $azpiatala->getIzenburuaeuProd();
