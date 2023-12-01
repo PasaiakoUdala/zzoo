@@ -13,9 +13,9 @@ services:
 #        ports:
 #            - "3306:3306"
 
-    php:
+    api:
         container_name: zzoo-php
-        env_file: ./.env
+        env_file: ./.env.local
         build:
             context: .
             dockerfile: docker/php/Dockerfile
@@ -26,19 +26,19 @@ services:
         restart: always
 #        depends_on:
 #            - mariadb
-        external_links:
-          - zergaordenantzak-mariadb
+        #external_links:
+        #  - zergaordenantzak-mariadb
         volumes:
             - '.:/usr/src/app'
-        user: 1000:1000
+        user: ${USER_ID}:${GROUP_ID}
         environment:
             - APP_ENV=dev
             - PHP_IDE_CONFIG=serverName=zergaordenantzak.test
             - XDEBUG_CONFIG=remote_host=192.168.2.8
         networks:
-            - zergaordenantzak_zzoo
+            - zzoo
 
-    nginx:
+    apinginx:
         container_name: zzoo-nginx
         image: nginx:1.15.3-alpine
         restart: always
@@ -46,15 +46,15 @@ services:
             - '.:/usr/src/app'
             - './docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
         depends_on:
-            - php
+            - api
         ports:
             - 8080:80
         networks:
-            - zergaordenantzak_zzoo
+            - zzoo
 
 volumes:
     mariadb_zzoo_api:
 
 networks:
-    zergaordenantzak_zzoo:
+    zzoo:
         external: true
