@@ -54,6 +54,7 @@ class ApiController extends FOSRestController
   public function getOrdenantzakbykodeaAction($kodea)
   {
     $em = $this->getDoctrine()->getManager();
+    $filter = $em->getFilters()->disable("ezabatu_marka");
     /** @var  $query QueryBuilder */
     $query = $em->createQuery(
     /** @lang text */
