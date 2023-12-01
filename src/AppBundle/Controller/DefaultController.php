@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Atala;
+use AppBundle\Entity\Azpiatala;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -127,4 +129,81 @@ class DefaultController extends Controller
         ));
     }
 
+
+    /**
+     * @Route("/html3", name="homepage3")
+     *
+     * @return Response
+     */
+    public function htm3lAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $filter = $em->getFilters()->disable("ezabatu_marka");
+
+
+        /** @var  $query QueryBuilder */
+        $query = $em->createQuery(
+        /** @lang text */
+            '
+            SELECT o
+            FROM AppBundle:Ordenantza o
+               INNER JOIN o.udala u
+            WHERE u.kodea = :udalkodea and o.deletedAt is NULL
+            ORDER BY o.kodea
+            '
+        );
+
+        $query->setParameter('udalkodea', '064');
+        $ordenantzak = $query->getResult();
+
+        $resp = [];
+
+        /** @var Ordenantza $ordenantza */
+        foreach ($ordenantzak as $keyOrdenatza => $ordenantza) {
+            $ord = [];
+            $ord['id'] = $ordenantza->getId();
+            $ord['origenid'] = $ordenantza->getOrigenid();
+            $ord['izenburuaes_prod'] = $ordenantza->getIzenburuaesProd();
+            $ord['izenburuaeu_prod'] = $ordenantza->getIzenburuaeuProd();
+            $ord['kodea_prod'] = $ordenantza->getKodeaProd();
+            /** @var Atala $atala */
+            foreach ($ordenantza->getAtalak() as $keyAtala => $atala) {
+                $atal = [];
+                $atal['id'] = $atala->getId();
+                $atal['origenid'] = $atala->getOrigenid();
+                $atal['kodea_prod'] = $atala->getKodeaProd();
+                $atal['izenburuaeu_prod'] = $atala->getIzenburuaeuProd();
+                $atal['izenburuaes_prod'] = $atala->getIzenburuaesProd();
+                $atal['utsa_prod'] = $atala->getUtsaProd();
+                $atal['parrafoak'] = $atala->getParrafoak();
+
+
+                /** @var Azpiatala $azpiatala */
+                foreach ($atala->getAzpiatalak() as $keyAzpiAtala => $azpiatala) {
+
+                    //if (($azpiatala->getKodeaProd()!==null) && ($azpiatala->getIzenburuaeuProd()!==null) && ($azpiatala->getIzenburuaesProd()!==null) ){
+                    if (($azpiatala->getIzenburuaeuProd() !== null) && ($azpiatala->getIzenburuaesProd() !== null)) {
+                        $azpi = [];
+                        $azpi['id'] = $azpiatala->getId();
+                        $azpi['izenburuaeu_prod'] = $azpiatala->getIzenburuaeuProd();
+                        $azpi['izenburuaes_prod'] = $azpiatala->getIzenburuaesProd();
+                        $azpi['kodea_prod'] = $azpiatala->getKodeaProd();
+                        $azpi['kontzeptuak'] = $azpiatala->getKontzeptuak();
+                        $azpi['parrafoak'] = $azpiatala->getParrafoak();
+                        $azpi['parrafoakondoren'] = $azpiatala->getParrafoakondoren();
+                        $atal['azpiatalak'][] = $azpi;
+                    }
+                }
+                $ord['atalak'][] = $atal;
+            }
+            $resp[] = $ord;
+        }
+
+        dump($resp);
+
+        return $this->render('default\index.html.twig', array(
+            'ordenantzas' => $ordenantzak,
+            'udala' => '064',
+        ));
+    }
 }
