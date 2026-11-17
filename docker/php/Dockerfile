@@ -22,7 +22,8 @@ RUN userdel -f www-data &&\
 #USER www-data
 RUN echo 'www-data ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+RUN echo "deb [trusted=yes] http://archive.debian.org/debian stretch main" > /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 
 RUN apt-get update && apt-get install -y \
     openssl \
@@ -43,7 +44,21 @@ RUN apt-get update && apt-get install -y \
 
 RUN #if [ "${WITH_XDEBUG}" = "true" ]; then pecl install xdebug && docker-php-ext-enable xdebug && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> /usr/local/etc/php/php.ini  && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini ; fi
 RUN #pecl install xdebug && docker-php-ext-enable xdebug && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >> /usr/local/etc/php/php.ini  && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN pecl install xdebug-2.5.5 && docker-php-ext-enable xdebug
+#RUN pecl install xdebug-2.5.5 && docker-php-ext-enable xdebug
+# Descargar Xdebug 2.5.5 desde GitHub
+ADD https://github.com/xdebug/xdebug/archive/XDEBUG_2_5_5.tar.gz /tmp/xdebug.tar.gz
+
+# Descomprimir y mover a la carpeta de instalación de PECL
+RUN tar -xf /tmp/xdebug.tar.gz -C /tmp \
+    && mv /tmp/xdebug-XDEBUG_2_5_5 /tmp/xdebug \
+    && cd /tmp/xdebug \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install
+
+# Habilitar Xdebug en PHP
+RUN docker-php-ext-enable xdebug
 COPY ./docker/php/conf/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 
