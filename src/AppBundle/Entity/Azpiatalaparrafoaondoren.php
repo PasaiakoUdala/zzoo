@@ -60,6 +60,7 @@ class Azpiatalaparrafoaondoren
 
     /**
      * @var string
+     * @Expose
      *
      * @ORM\Column(name="testuaeu_prod", type="text", length=65535, nullable=true)
      */
@@ -67,7 +68,6 @@ class Azpiatalaparrafoaondoren
 
     /**
      * @var string
-     * @Expose
      *
      * @ORM\Column(name="testuaes", type="text", length=65535, nullable=true)
      */
@@ -75,6 +75,7 @@ class Azpiatalaparrafoaondoren
 
     /**
      * @var string
+     * @Expose
      *
      * @ORM\Column(name="testuaes_prod", type="text", length=65535, nullable=true)
      */
@@ -82,7 +83,6 @@ class Azpiatalaparrafoaondoren
 
     /**
      * @var bool
-     * @Expose
      *
      * @ORM\Column(name="ezabatu", type="boolean", nullable=true)
      */

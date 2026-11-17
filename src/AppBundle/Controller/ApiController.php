@@ -99,6 +99,10 @@ class ApiController extends FOSRestController
 
     /** @var Ordenantza $ordenantza */
     foreach ($ordenantzak as $keyOrdenatza => $ordenantza) {
+        // Oraindik indarrean jarri gabe (_prod eremurik ez): ez erakutsi
+        if (($ordenantza->getIzenburuaeuProd() === null) || ($ordenantza->getIzenburuaesProd() === null)) {
+            continue;
+        }
         $ord = [];
         $ord['id'] = $ordenantza->getId();
         $ord['origenid'] = $ordenantza->getOrigenid();
@@ -107,6 +111,10 @@ class ApiController extends FOSRestController
         $ord['kodea_prod'] = $ordenantza->getKodeaProd();
         /** @var Atala $atala */
         foreach ($ordenantza->getAtalak() as $keyAtala => $atala) {
+            // Oraindik indarrean jarri gabe (_prod eremurik ez): ez erakutsi
+            if (($atala->getIzenburuaeuProd() === null) || ($atala->getIzenburuaesProd() === null)) {
+                continue;
+            }
             $atal = [];
             $atal['id'] = $atala->getId();
             $atal['origenid'] = $atala->getOrigenid();
